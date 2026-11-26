@@ -184,13 +184,6 @@
 </div>
 
 <script>
-  // ===== Einstellungen =====
-  // Damit die Antworten irgendwo ankommen, hier entweder einen Formular-Dienst
-  // (z. B. https://formspree.io/f/xxxxxx) eintragen ...
-  const FORM_ENDPOINT = "";
-  // ... oder eine E-Mail-Adresse, an die die Antwort per Mailprogramm geschickt wird.
-  const MAIL_EMPFAENGER = "";
-
   // Countdown bis 04.02.2027, 11:11 Uhr
   const start = new Date("2027-02-04T11:11:00+01:00");
   function updateCountdown() {
@@ -205,7 +198,7 @@
   setInterval(updateCountdown, 60000);
 
   // Formular absenden
-  document.getElementById("umfrage").addEventListener("submit", async (e) => {
+  document.getElementById("umfrage").addEventListener("submit", (e) => {
     e.preventDefault();
     const form = e.target;
     const kostueme = [...form.querySelectorAll("input[name=kostuem]:checked")].map(c => c.value);
@@ -219,24 +212,6 @@
       kostueme: kostueme.join(", "),
       kommentar: form.kommentar.value.trim()
     };
-
-    if (FORM_ENDPOINT) {
-      try {
-        await fetch(FORM_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify(daten)
-        });
-      } catch (err) {
-        alert("Senden hat nicht geklappt – bitte später nochmal versuchen.");
-        return;
-      }
-    } else if (MAIL_EMPFAENGER) {
-      const text = `Name: ${daten.name}\nGröße: ${daten.groesse}\nKostüme: ${daten.kostueme}\nKommentar: ${daten.kommentar || "-"}`;
-      window.location.href = "mailto:" + MAIL_EMPFAENGER +
-        "?subject=" + encodeURIComponent("Kappenfest-Kostüm: " + daten.name) +
-        "&body=" + encodeURIComponent(text);
-    }
 
     form.style.display = "none";
     document.getElementById("danke").style.display = "block";
